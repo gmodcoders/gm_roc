@@ -16,14 +16,10 @@ using namespace GarrysMod;
 
 Lua::ILuaBase* MENU;
 lua_State* clientState;
-void* rexthisptr;
 
 typedef void* (__thiscall *RunStringExHookFn)(void* thisptr, const char* fileName, const char* path, const char* stringToRun, bool run, bool showErrors, bool, bool);
 void* __fastcall RunStringExHook(void* thisptr, int edx, const char* fileName, const char* path, const char* stringToRun, bool run, bool showErrors, bool a, bool b)
 {
-	if (rexthisptr == nullptr)
-		rexthisptr = thisptr;
-
 	MENU->PushSpecial(Lua::SPECIAL_GLOB);
 	MENU->GetField(-1, "hook");
 		MENU->GetField(-1, "Call");
@@ -66,10 +62,8 @@ void* __fastcall CreateLuaInterfaceHook(void* thisptr, int edx, unsigned char st
 typedef void* (__thiscall *CloseLuaInterfaceHookFn)(void* thisptr, void* state);
 void* __fastcall CloseLuaInterfaceHook(void* thisptr, int edx, lua_State* state)
 {
-	if (state == clientState) {
+	if (state == clientState)
 		clientState = NULL;
-		rexthisptr = nullptr;
-	}
 
 	return luaSharedVMTHook->GetOriginalFunction<CloseLuaInterfaceHookFn>(CLOSELUAINTERFACE)(thisptr, state);
 }
@@ -78,10 +72,10 @@ int RunOnClient(lua_State* state)
 {
 	LUA->CheckType(1, GarrysMod::Lua::Type::STRING);
 
-	if (!clientState || rexthisptr == nullptr)
+	if (!clientState)
 		LUA->ThrowError("Not in game");
 
-	luaClientVMTHook->GetOriginalFunction<RunStringExHookFn>(RUNSTRINGEX)(rexthisptr, "", "", LUA->CheckString(1), true, true, true, true);
+	luaClientVMTHook->GetOriginalFunction<RunStringExHookFn>(RUNSTRINGEX)(clientState, "", "", LUA->CheckString(1), true, true, true, true);
 
 	return 0;
 }
