@@ -81,7 +81,7 @@ int RunOnClient(lua_State* state)
 	if (!clientState || rexthisptr == nullptr)
 		LUA->ThrowError("Not in game");
 
-	luaClientVMTHook->GetOriginalFunction<RunStringExHookFn>(RUNSTRINGEX)(rexthisptr, "", "", LUA->CheckString(1), true, true, false, false);
+	luaClientVMTHook->GetOriginalFunction<RunStringExHookFn>(RUNSTRINGEX)(rexthisptr, "", "", LUA->CheckString(1), true, true, true, true);
 
 	return 0;
 }
