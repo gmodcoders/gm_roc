@@ -14,11 +14,11 @@ VMTHook* luaClientVMTHook;
 
 using namespace GarrysMod;
 
-Lua::ILuaBase* MENU;
-lua_State* clientState;
+Lua::ILuaBase *MENU;
+lua_State *clientState;
 
-typedef void* (__thiscall *RunStringExHookFn)(void* thisptr, const char* fileName, const char* path, const char* stringToRun, bool run, bool showErrors, bool, bool);
-void* __fastcall RunStringExHook(void* thisptr, int edx, const char* fileName, const char* path, const char* stringToRun, bool run, bool showErrors, bool a, bool b)
+typedef void *(__thiscall *RunStringExHookFn)(void *thisptr, const char *fileName, const char *path, const char *stringToRun, bool run, bool showErrors, bool, bool);
+void * __fastcall RunStringExHook(void *thisptr, int edx, const char *fileName, const char *path, const char *stringToRun, bool run, bool showErrors, bool a, bool b)
 {
 	MENU->PushSpecial(Lua::SPECIAL_GLOB);
 	MENU->GetField(-1, "hook");
@@ -35,10 +35,10 @@ void* __fastcall RunStringExHook(void* thisptr, int edx, const char* fileName, c
 	return luaClientVMTHook->GetOriginalFunction<RunStringExHookFn>(RUNSTRINGEX)(thisptr, fileName, path, stringToRun, run, showErrors, a, b);
 }
 
-typedef lua_State* (__thiscall *CreateLuaInterfaceHookFn)(void* thisptr, unsigned char stateType, bool renew);
-void* __fastcall CreateLuaInterfaceHook(void* thisptr, int edx, unsigned char stateType, bool renew)
+typedef lua_State *(__thiscall *CreateLuaInterfaceHookFn)(void *thisptr, unsigned char stateType, bool renew);
+lua_State * __fastcall CreateLuaInterfaceHook(void *thisptr, int edx, unsigned char stateType, bool renew)
 {
-	lua_State* state = luaSharedVMTHook->GetOriginalFunction<CreateLuaInterfaceHookFn>(CREATELUAINTERFACE)(thisptr, stateType, renew);
+	lua_State *state = luaSharedVMTHook->GetOriginalFunction<CreateLuaInterfaceHookFn>(CREATELUAINTERFACE)(thisptr, stateType, renew);
 
 	MENU->PushSpecial(Lua::SPECIAL_GLOB);
 	MENU->GetField(-1, "hook");
@@ -59,8 +59,8 @@ void* __fastcall CreateLuaInterfaceHook(void* thisptr, int edx, unsigned char st
 	return clientState;
 }
 
-typedef void* (__thiscall *CloseLuaInterfaceHookFn)(void* thisptr, void* state);
-void* __fastcall CloseLuaInterfaceHook(void* thisptr, int edx, lua_State* state)
+typedef void *(__thiscall *CloseLuaInterfaceHookFn)(void *thisptr, void *state);
+void * __fastcall CloseLuaInterfaceHook(void *thisptr, int edx, lua_State *state)
 {
 	if (state == clientState)
 		clientState = NULL;
@@ -68,7 +68,7 @@ void* __fastcall CloseLuaInterfaceHook(void* thisptr, int edx, lua_State* state)
 	return luaSharedVMTHook->GetOriginalFunction<CloseLuaInterfaceHookFn>(CLOSELUAINTERFACE)(thisptr, state);
 }
 
-int RunOnClient(lua_State* state)
+int RunOnClient(lua_State *state)
 {
 	LUA->CheckType(1, GarrysMod::Lua::Type::STRING);
 
@@ -84,8 +84,8 @@ GMOD_MODULE_OPEN()
 {
 	MENU = LUA;
 
-	auto luaShared = util::GetInterfaceSingle<void* >("lua_shared.dll", "LUASHARED003");
-	
+	auto luaShared = util::GetInterfaceSingle<void *>("lua_shared.dll", "LUASHARED003");
+
 	if (!luaShared)
 		MessageBoxA(NULL, "gay", "gay", NULL);
 
