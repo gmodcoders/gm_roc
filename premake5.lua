@@ -14,7 +14,7 @@ solution "gm_roc2"
 		flags "StaticRuntime"
 		kind "SharedLib"
 
-		targetdir "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/garrysmod/lua/bin"
+		targetdir "bin"
 
 		buildoptions {"/Os", "/MP", "/arch:SSE2"}
 
